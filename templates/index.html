@@ -5,15 +5,16 @@
     <title>Title</title>
 </head>
 <body>
-{% for i in authors %}
-    <h2><a href="{% url 'author' pk=i.id %}">{{ i.title }}</a></h2>
-{% endfor %}
 {% for i in categories %}
     <h2><a href="{% url 'category' pk=i.id %}">{{ i.title }}</a></h2>
 {% endfor %}
-{% for i in posts %}
-    <h2><a href="{% url 'post' pk=i.id %}">{{ i.title }}</a></h2>
+<hr>
+{% for i in authors %}
+    <h2><a href="{% url 'author' pk=i.id %}">{{ i.name }}</a></h2>
 {% endfor %}
-<h5>{{ fan.title }}</h5>
+<hr>
+{% for i in users %}
+    <h2><a href="{% url 'user' pk=i.id %}">{{ i.name }}</a></h2>
+{% endfor %}
 </body>
 </html>
