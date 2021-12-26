@@ -1,0 +1,82 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Alata', sans-serif;
+    color: black;
+    font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+ul, li {
+    display: block;
+}
+
+.header {
+    background: url("../img/main.jpg") no-repeat center top / cover;
+}
+
+.container {
+    width: 1366px;
+    margin: 0 auto;
+}
+
+.menu li a {
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.header a {
+    color: #fff;
+}
+
+.menu {
+    display: flex;
+}
+
+.menu li {
+    margin-right: 40px;
+}
+
+button {
+    margin-right: 20px;
+    background-color: Transparent;
+    border: 2px solid white;
+    border-radius: 8px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 14px;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #fff;
+    color: black;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.authorization {
+    margin-left: auto;
+    display: flex;
+}
+.btn-pass {
+    margin-right: 40px;
+}
+
+.authorization button {
+    text-transform: uppercase;
+    text-decoration: none;
+}

@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for i in comments %}
-<h2>{{ i.comments }}</h2>
-{% endfor %}
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="width: 18rem;">
+    <div class="card-body">
+        {% for i in comments %}
+            <h5 class="card-title">{{ i.comments }}</h5>
+            <p class="card-text">{{ i.created_at }}.</p>
+            <a href="#" class="btn btn-primary">More</a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

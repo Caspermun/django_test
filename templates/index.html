@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for i in categories %}
-    <h2><a href="{% url 'category' pk=i.id %}">{{ i.title }}</a></h2>
-{% endfor %}
-<hr>
-{% for i in authors %}
-    <h2><a href="{% url 'author' pk=i.id %}">{{ i.name }}</a></h2>
-{% endfor %}
-<hr>
-{% for i in users %}
-    <h2><a href="{% url 'user' pk=i.id %}">{{ i.name }}</a></h2>
-{% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+
+
+{#    {% for i in authors %}#}
+{#        <h2><a href="{% url 'author' pk=i.id %}">{{ i.name }}</a></h2>#}
+{#    {% endfor %}#}
+
+
+
+
+{% endblock %}
