@@ -4,10 +4,24 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from blog.forms import LoginForm
+from blog.models import Category, Author, Comment
 
 
 def sign_in(request):
+    categories = Category.objects.all()
+    authors = Author.objects.all()
+    users = User.objects.all()
+
+    user_list = []
+    for i in users:
+        comment = Comment.objects.filter(users_id=i.id)
+        if comment:
+            user_list.append(i.id)
+    us = users.filter(id__in=user_list)
+
     if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
@@ -26,6 +40,17 @@ def sign_in(request):
 
 
 def registration(request):
+    categories = Category.objects.all()
+    authors = Author.objects.all()
+    users = User.objects.all()
+
+    user_list = []
+    for i in users:
+        comment = Comment.objects.filter(users_id=i.id)
+        if comment:
+            user_list.append(i.id)
+    us = users.filter(id__in=user_list)
+
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
@@ -33,5 +58,7 @@ def registration(request):
         password2 = request.POST['password2']
         if password == password2:
             user = User.objects.create_user(username=username, email=email, password=password2)
-        return HttpResponse('User created successfully!')
+            return HttpResponse('User created successfully!')
+        else:
+            return HttpResponse('Passwords doesnt match each other!')
     return render(request, 'registration.html', locals())
