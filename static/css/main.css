@@ -29,6 +29,7 @@ ul, li {
     text-transform: uppercase;
     text-decoration: none;
     font-size: 14px;
+
 }
 
 .header a {
@@ -79,4 +80,9 @@ button:hover {
 .authorization button {
     text-transform: uppercase;
     text-decoration: none;
+}
+
+form {
+    display: block;
+
 }
