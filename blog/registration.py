@@ -35,7 +35,8 @@ def sign_in(request):
                 return HttpResponse('Invalid login')
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form,
+                                          'categories': categories})
 
 
 def registration(request):
@@ -60,4 +61,4 @@ def registration(request):
             return HttpResponse('User created successfully!')
         else:
             return HttpResponse('Passwords doesnt match each other!')
-    return render(request, 'registration.html', locals())
+    return render(request, 'registration.html', {'categories': categories})

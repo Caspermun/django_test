@@ -21,6 +21,18 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+class Ad(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Title')
+    description = models.TextField()
+    image = models.ImageField(upload_to='ads/', verbose_name='Main image')
+    user = models.ForeignKey(to='CustomUser', on_delete=models.CASCADE, verbose_name='User')
+    created_at = models.DateTimeField(auto_now_add=True)
+    moderated = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
 
 class Author(models.Model):
     name = models.CharField(max_length=255, verbose_name='Name')

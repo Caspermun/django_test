@@ -1,8 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from blog.models import Category, Post, Author, Comment, CustomUser
+from blog.forms import AdForm
+from blog.models import Category, Post, Author, Comment, CustomUser, Ad
 
 
 def index(request):
@@ -80,3 +82,22 @@ def user(request, pk):
 def card(request):
     name = 'Nursultan Mirlanov'
     return render(request, 'card.html', locals())
+
+
+def create_ad(request):
+    categories = Category.objects.all()
+
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = AdForm(request.POST, request.FILES)
+            if form.is_valid():
+                cd = form.cleaned_data
+                ad = Ad.objects.create(title=cd['title'], description=cd['description'], image=cd['image'],
+                                       user=request.user)
+                return HttpResponse('Ad sent successfully!')
+        else:
+            form = AdForm()
+    else:
+        return HttpResponse('Please login.')
+    return render(request, 'ad.html', {'form': form,
+                                       'categories': categories})
