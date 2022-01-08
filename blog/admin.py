@@ -1,10 +1,23 @@
 from django.contrib import admin
-from blog.models import Post, Author, Category, Comment, User
+from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import gettext_lazy as _
+
+from blog.models import Post, Author, Category, Comment, CustomUser
 
 # Register your models here.
+
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {
+            'fields': ('is_active', 'is_staff', 'is_premium', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+    )
 
 admin.site.register(Post)
 admin.site.register(Author)
 admin.site.register(Category)
-admin.site.register(User)
 admin.site.register(Comment)

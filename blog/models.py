@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
@@ -30,17 +31,17 @@ class Author(models.Model):
         return f'{self.name} {self.surname}'
 
 
-class User(models.Model):
-    name = models.CharField(max_length=255, verbose_name='Name')
-    login = models.CharField(max_length=255, verbose_name='Login')
+class CustomUser(AbstractUser):
+    is_premium = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
+        return self.username
+
 
 class Comment(models.Model):
     comments = models.TextField(max_length=300, verbose_name='Comments', blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    users = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='Users', null=True)
+    users = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, related_name='Users', null=True)
 
     def __str__(self):
         return self.comments

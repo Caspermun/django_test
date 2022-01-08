@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
 from blog.registration import registration, sign_in
 from blog.views import index, category, author, user, card
 

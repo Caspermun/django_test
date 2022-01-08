@@ -2,13 +2,30 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 
 # Create your views here.
-from blog.models import Category, Post, Author, Comment, User
+from blog.models import Category, Post, Author, Comment, CustomUser
 
 
 def index(request):
     categories = Category.objects.all()
     authors = Author.objects.all()
-    users = User.objects.all()
+    users = CustomUser.objects.all()
+
+    user_list = []
+    for i in users:
+        comment = Comment.objects.filter(users_id=i.id)
+        if comment:
+            user_list.append(i.id)
+    us = users.filter(id__in=user_list)
+
+    return render(request, 'index.html', {'categories': categories,
+                                          'authors': authors,
+                                          'users': us})
+
+
+def category(request, pk):
+    categories = Category.objects.all()
+    authors = Author.objects.all()
+    users = CustomUser.objects.all()
 
     user_list = []
     for i in users:
@@ -21,22 +38,6 @@ def index(request):
         category_fan = Category.objects.get(title='Cars')
     except ObjectDoesNotExist:
         raise ValueError('This category does not exist')
-    return render(request, 'index.html', {'categories': categories,
-                                          'fan': category_fan, 'authors': authors,
-                                          'users': us})
-
-
-def category(request, pk):
-    categories = Category.objects.all()
-    authors = Author.objects.all()
-    users = User.objects.all()
-
-    user_list = []
-    for i in users:
-        comment = Comment.objects.filter(users_id=i.id)
-        if comment:
-            user_list.append(i.id)
-    us = users.filter(id__in=user_list)
 
     posts = Post.objects.filter(category_id=pk)
     return render(request, 'category.html', locals())
@@ -45,7 +46,7 @@ def category(request, pk):
 def author(request, pk):
     categories = Category.objects.all()
     authors = Author.objects.all()
-    users = User.objects.all()
+    users = CustomUser.objects.all()
 
     user_list = []
     for i in users:
@@ -60,10 +61,9 @@ def author(request, pk):
 
 
 def user(request, pk):
-
     categories = Category.objects.all()
     authors = Author.objects.all()
-    users = User.objects.all()
+    users = CustomUser.objects.all()
 
     user_list = []
     for i in users:
@@ -75,7 +75,6 @@ def user(request, pk):
     comments = Comment.objects.filter(users_id=pk)
     params = {'comments': comments}
     return render(request, 'user.html', locals())
-
 
 
 def card(request):

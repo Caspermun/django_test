@@ -16,8 +16,8 @@ ul, li {
     display: block;
 }
 
-.header {
-    background: url("../img/main.jpg") no-repeat center top / cover;
+.main {
+    background: url("../img/white-wooden-textures.jpg") no-repeat center top / cover;
 }
 
 .container {
@@ -50,7 +50,6 @@ button {
     border: 2px solid white;
     border-radius: 8px;
     text-transform: uppercase;
-    text-decoration: none;
     padding: 10px 20px;
     text-align: center;
     font-size: 14px;
@@ -73,16 +72,75 @@ button:hover {
     margin-left: auto;
     display: flex;
 }
+
 .btn-pass {
     margin-right: 40px;
 }
 
-.authorization button {
-    text-transform: uppercase;
+.text-center {
+    text-align: center;
+}
+
+.btns {
     text-decoration: none;
 }
 
-form {
-    display: block;
+.btns:hover {
+    color: black;
+}
 
+.section {
+    padding-top: 200px;
+    padding-bottom: 200px;
+}
+
+.first {
+    background: url("../img/apart.jpg") no-repeat;
+    background-size: 100%;
+    border-radius: 5%;
+    width: 250px;
+    height: 250px;
+    margin: 20px;
+    box-shadow: 0 0 5px black;
+}
+
+.second {
+    background: url("../img/tesla.jpg") no-repeat;
+    background-size: 100%;
+    border-radius: 5%;
+    width: 250px;
+    height: 250px;
+    margin: 20px;
+    box-shadow: 0 0 5px black;
+}
+
+.third {
+    background: url("../img/ani.jpg") no-repeat;
+    background-size: 100%;
+    border-radius: 5%;
+    width: 250px;
+    height: 250px;
+    margin: 20px;
+    box-shadow: 0 0 10px black;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin-top: 115px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: white;
+    text-shadow: 0 0 5px black;
+    font-size: 20px;
+}
+
+header {
+    background: #777777;
 }

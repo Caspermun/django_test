@@ -1,28 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {#    <form method="POST">#}
-    {#        {% csrf_token %}#}
-    {#        <h1>Please register</h1>#}
-    {#        <div class="form-floating">#}
-    {#            <input type="text" name="username" class="form-control" id="username" placeholder="username">#}
-    {#            <label for="username">Username</label>#}
-    {#        </div>#}
-    {##}
-    {#        <div class="form-floating">#}
-    {#            <input type="text" name="email" class="form-control" id="email" placeholder="name@example.com">#}
-    {#            <label for="email">Email address</label>#}
-    {#        </div>#}
-    {#        <div class="form-floating">#}
-    {#            <input type="password" name="password" class="form-control" id="password" placeholder="Password">#}
-    {#            <label for="password">Password</label>#}
-    {#        </div>#}
-    {#        <div class="form-floating">#}
-    {#            <input type="password" name="password2" class="form-control" id="password_confirm" placeholder="Confirm password">#}
-    {#            <label for="password_confirm">Confirm password</label>#}
-    {#        </div>#}
-    {#        <button type="submit">Register</button>#}
-    {#    </form>#}
     <div class="text-center" style="padding:50px 0">
         <div class="logo">register</div>
         <div class="login-form-1">
@@ -32,21 +10,21 @@
                 <div class="main-login-form">
                     <div class="login-group">
                         <div class="form-group">
-                            <label for="username" class="sr-only">Username</label>
+                            <label for="username" class="sr-only"></label>
                             <input type="text" class="form-control" id="username" name="username"
                                    placeholder="username">
                         </div>
                         <div class="form-group">
-                            <label for=email" class="sr-only">Email</label>
+                            <label for=email" class="sr-only"></label>
                             <input type="text" class="form-control" id="email" name="email" placeholder="name@example.com">
                         </div>
                         <div class="form-group">
-                            <label for="password" class="sr-only">Password</label>
+                            <label for="password" class="sr-only"></label>
                             <input type="password" class="form-control" id="password" name="password"
                                    placeholder="password">
                         </div>
                         <div class="form-group">
-                            <label for="password_confirm" class="sr-only">Password Confirm</label>
+                            <label for="password_confirm" class="sr-only"></label>
                             <input type="password" class="form-control" id="password_confirm"
                                    name="password2" placeholder="confirm password">
                         </div>

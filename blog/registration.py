@@ -1,16 +1,15 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from blog.forms import LoginForm
-from blog.models import Category, Author, Comment
+from blog.models import Category, Author, Comment, CustomUser
 
 
 def sign_in(request):
     categories = Category.objects.all()
     authors = Author.objects.all()
-    users = User.objects.all()
+    users = CustomUser.objects.all()
 
     user_list = []
     for i in users:
@@ -42,7 +41,7 @@ def sign_in(request):
 def registration(request):
     categories = Category.objects.all()
     authors = Author.objects.all()
-    users = User.objects.all()
+    users = CustomUser.objects.all()
 
     user_list = []
     for i in users:
@@ -57,7 +56,7 @@ def registration(request):
         password = request.POST['password']
         password2 = request.POST['password2']
         if password == password2:
-            user = User.objects.create_user(username=username, email=email, password=password2)
+            user = CustomUser.objects.create_user(username=username, email=email, password=password2)
             return HttpResponse('User created successfully!')
         else:
             return HttpResponse('Passwords doesnt match each other!')
