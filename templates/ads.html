@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="list-group">
+        {% for i in ads %}
+            <a href="{% url 'ads' %}" class="list-group-item">
+                {{ i.title }}
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

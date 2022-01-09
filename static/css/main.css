@@ -144,3 +144,28 @@ button:hover {
 header {
     background: #777777;
 }
+
+.ads-all {
+    justify-content: right;
+    display: flex;
+    text-align: right;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.list-group {
+    width: 200px;
+}
+
+.list-group a {
+    text-transform: uppercase;
+    text-decoration: none;
+    color: black;
+    display: block;
+    padding: 12px;
+    background-color: #777777;
+}
+
+.list-group a:hover {
+    color: white;
+}

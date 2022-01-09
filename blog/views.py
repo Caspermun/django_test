@@ -101,3 +101,10 @@ def create_ad(request):
         return HttpResponse('Please login.')
     return render(request, 'ad.html', {'form': form,
                                        'categories': categories})
+
+
+def ads(request):
+    ads = Ad.objects.all()
+    ads = reversed(ads)
+
+    return render(request, 'ads.html', locals())
