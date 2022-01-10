@@ -103,8 +103,14 @@ def create_ad(request):
                                        'categories': categories})
 
 
-def ads(request):
+def ad(request):
     ads = Ad.objects.all()
-    ads = reversed(ads)
+    rev_ads = reversed(ads)
 
     return render(request, 'ads.html', locals())
+
+
+def ads(request, pk):
+    adverts = Ad.objects.filter(pk=pk)
+
+    return render(request, 'moreads.html', locals())

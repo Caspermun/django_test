@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from blog.registration import registration, sign_in
-from blog.views import index, category, author, user, card, create_ad, ads
+from blog.views import index, category, author, user, card, create_ad, ad, ads
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +29,8 @@ urlpatterns = [
     path('login/', sign_in, name='login'),
     path('registration/', registration, name='registration'),
     path('post/', card, name='post'),
-    path('create-ad', create_ad, name='create_ad'),
-    path('ads', ads, name='ads'),
+    path('create-ad/', create_ad, name='create_ad'),
+    path('ad/', ad, name='ad'),
+    path('ads/<int:pk>', ads, name='ads'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

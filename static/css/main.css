@@ -145,12 +145,15 @@ header {
     background: #777777;
 }
 
-.ads-all {
-    justify-content: right;
-    display: flex;
-    text-align: right;
+.ads {
     text-transform: uppercase;
     text-decoration: none;
+}
+
+.ads-all {
+    justify-content: right;
+    text-align: right;
+    display: flex;
 }
 
 .list-group {
@@ -168,4 +171,27 @@ header {
 
 .list-group a:hover {
     color: white;
+}
+
+.post {
+    display: block;
+    text-align: center;
+    justify-content: center;
+}
+
+.description {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-right: 500px;
+    padding-left: 500px;
+}
+
+.author {
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #555555;
+}
+
+.more-info {
+    padding-top: 20px;
 }

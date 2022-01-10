@@ -37,7 +37,7 @@ class Ad(models.Model):
 class Author(models.Model):
     name = models.CharField(max_length=255, verbose_name='Name')
     surname = models.CharField(max_length=255, verbose_name='Surname')
-    posts = models.ForeignKey(to='Post', on_delete=models.CASCADE, related_name='Posts')
+    # posts = models.ForeignKey(to='Post', on_delete=models.CASCADE, related_name='Posts')
 
     def __str__(self):
         return f'{self.name} {self.surname}'

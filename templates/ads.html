@@ -2,10 +2,12 @@
 
 {% block content %}
     <div class="list-group">
-        {% for i in ads %}
-            <a href="{% url 'ads' %}" class="list-group-item">
-                {{ i.title }}
-            </a>
+        {% for i in rev_ads %}
+            <li class="list-group-item">
+                <a href="{% url 'ads' pk=i.id %}">
+                    {{ i.title }}
+                </a>
+            </li>
         {% endfor %}
     </div>
 {% endblock %}
