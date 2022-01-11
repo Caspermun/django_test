@@ -107,10 +107,10 @@ def ad(request):
     ads = Ad.objects.all()
     rev_ads = reversed(ads)
 
-    return render(request, 'ads.html', locals())
+    return render(request, 'ad_list.html', locals())
 
 
 def ads(request, pk):
-    adverts = Ad.objects.filter(pk=pk)
+    advert = Ad.objects.get(pk=pk)
 
-    return render(request, 'moreads.html', locals())
+    return render(request, 'ad_detail.html', locals())
