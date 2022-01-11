@@ -5,6 +5,7 @@
     {% for i in adverts %}
         <div class="post">
             <div class="main-info">
+                <img src="{{ i.image.url }}">
                 <h2>{{ i.title }}</h2>
                 <h5 class="description">{{ i.description }}</h5>
                 <h6>Author</h6>

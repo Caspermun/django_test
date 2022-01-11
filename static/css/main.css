@@ -18,6 +18,8 @@ ul, li {
 
 .main {
     background: url("../img/white-wooden-textures.jpg") no-repeat center top / cover;
+    width: 100%;
+    height: 100%;
 }
 
 .container {
@@ -148,12 +150,16 @@ header {
 .ads {
     text-transform: uppercase;
     text-decoration: none;
+    margin-right: 40px;
+    margin-left: 40px;
+    display: flex;
 }
 
 .ads-all {
     justify-content: right;
     text-align: right;
     display: flex;
+    margin-left: auto;
 }
 
 .list-group {
@@ -177,6 +183,7 @@ header {
     display: block;
     text-align: center;
     justify-content: center;
+    margin-bottom: 200px;
 }
 
 .description {
@@ -194,4 +201,10 @@ header {
 
 .more-info {
     padding-top: 20px;
+    padding-bottom: 100px;
+}
+
+.ad-img {
+    width: 250px;
+    height: 250px;
 }
