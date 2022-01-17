@@ -2,9 +2,10 @@
 
 {% block content %}
     <div class="text-center" style="padding:50px 0">
-        <div class="logo">login</div>
+        <div class="logo">register</div>
+        {% include '_partials/messages.html' %}
         <div class="login-form-1">
-            <form action="" method="POST" id="login-form" class="text-left">
+            <form id="register-form" class="text-left" method="POST">
                 {% csrf_token %}
                 <div class="login-form-main-message"></div>
                 <div class="main-login-form">
@@ -15,15 +16,24 @@
                                    placeholder="username">
                         </div>
                         <div class="form-group">
+                            <label for=email" class="sr-only"></label>
+                            <input type="text" class="form-control" id="email" name="email" placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
                             <label for="password" class="sr-only"></label>
                             <input type="password" class="form-control" id="password" name="password"
                                    placeholder="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="password_confirm" class="sr-only"></label>
+                            <input type="password" class="form-control" id="password_confirm"
+                                   name="password2" placeholder="confirm password">
                         </div>
                     </div>
                     <button type="submit" class="login-button"><i class="fa fa-chevron-right"></i></button>
                 </div>
                 <div class="etc-login-form">
-                    <p>new user? <a href="{% url 'registration' %}">create new account</a></p>
+                    <p>already have an account? <a href="{% url 'login' %}">login here</a></p>
                 </div>
             </form>
         </div>

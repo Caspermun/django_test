@@ -34,6 +34,14 @@
                         Найти
                     </button>
                 </form>
+                <form class="ui large form" method="post" action={% url 'logout_user' %}>
+
+                    {% csrf_token %}
+                    <input class="ui button"
+                           type="submit"
+                           value="Sign out"
+                    />
+                </form>
                 <div class="authorization">
                     <button type=button class="btn">
                         <a href="{% url 'login' %}" class="btns">

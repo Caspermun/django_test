@@ -2,79 +2,59 @@ import json
 import threading
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
+from validate_email import validate_email
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template import loader
+from django.template.loader import render_to_string
 from django.urls import reverse
 
 from blog.forms import LoginForm
 from blog.models import Category, Author, Comment, CustomUser
 from blog.parameters import SITE_PROTOCOL, SITE_URL
 
-from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError, force_str
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-# from .utils import token_generator
 from django_test.utils import token_generator
 
 
-def sign_in(request):
-    categories = Category.objects.all()
-    authors = Author.objects.all()
-    users = CustomUser.objects.all()
+class EmailThread(threading.Thread):
 
-    user_list = []
-    for i in users:
-        comment = Comment.objects.filter(users_id=i.id)
-        if comment:
-            user_list.append(i.id)
-    us = users.filter(id__in=user_list)
+    def __init__(self, email):
+        self.email = email
+        threading.Thread.__init__(self)
 
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(username=cd['username'], password=cd['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponse('Authenticated successfully')
-                else:
-                    return HttpResponse('Disabled account')
-            else:
-                return HttpResponse('Invalid login')
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form,
-                                          'categories': categories})
+    def run(self):
+        self.email.send()
 
 
-# def send_activation_email(user, request):
-#     current_site = get_current_site(request)
-#     email_subject = 'Activate your account'
-#     email_body = render_to_string('authentication/activate.html', {
-#         'user': user,
-#         'domain': current_site,
-#         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#         'token': generate_token.make_token(user)
-#     })
-#
-#     email = EmailMessage(subject=email_subject, body=email_body,
-#                          from_email=settings.EMAIL_FROM_USER,
-#                          to=[user.email]
-#                          )
-#
-#     if not settings.TESTING:
-#         EmailThread(email).start()
+def send_activation_email(user, request):
+    current_site = get_current_site(request)
+    email_subject = 'Activate your account'
+    email_body = render_to_string('authentification/activate.html', {
+        'user': user,
+        'domain': current_site,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': token_generator.make_token(user)
+    })
+
+    email = EmailMessage(subject=email_subject, body=email_body,
+                         from_email=settings.EMAIL_FROM_USER,
+                         to=[user.email]
+                         )
+
+    if not settings.TESTING:
+        EmailThread(email).start()
+
 
 def registration(request):
     if request.method == 'POST':
@@ -84,55 +64,114 @@ def registration(request):
         password = request.POST['password']
         password2 = request.POST['password2']
 
-        if password == password2:
-            user = CustomUser.objects.create_user(username=username, email=email, password=password2)
-            user.set_password(password2)
-            user.is_active = False
-            user.save()
+        if len(password) < 6:
+            messages.add_message(request, messages.ERROR,
+                                 'Password should be at least 6 characters')
+            context['has_error'] = True
 
-            uid64 = urlsafe_base64_encode(force_bytes(user.pk))
+        if password != password2:
+            messages.add_message(request, messages.ERROR,
+                                 'Password mismatch')
+            context['has_error'] = True
 
-            domain = get_current_site(request).domain
-            link = reverse('activate', kwargs={'uid64': uid64,
-                                               'token': token_generator.make_token(user)})
+        if not validate_email(email):
+            messages.add_message(request, messages.ERROR,
+                                 'Enter a valid email address')
+            context['has_error'] = True
 
-            activate_url = 'http://' + domain + link
+        if not username:
+            messages.add_message(request, messages.ERROR,
+                                 'Username is required')
+            context['has_error'] = True
 
-            email_body = 'Hi ' + user.username + \
-                         '. Please use this link to verify your account\n' + activate_url
+        if CustomUser.objects.filter(username=username).exists():
+            messages.add_message(request, messages.ERROR,
+                                 'Username is taken, choose another one')
+            context['has_error'] = True
 
-            email_subject = 'Activate your account'
-            email = EmailMessage(
-                email_subject,
-                email_body,
-                'emailcnfrm@gmail.com',
-                [email],
-            )
-            email.send(fail_silently=False)
-            messages.success(request, 'Account successfully created')
-            return HttpResponse('User created successfully!')
-        else:
-            return HttpResponse('Passwords doesnt match each other!')
-    return render(request, 'registration.html', {'categories': categories})
+            return render(request, 'authentification/registration.html', context, status=409)
 
+        if CustomUser.objects.filter(email=email).exists():
+            messages.add_message(request, messages.ERROR,
+                                 'Email is taken, choose another one')
+            context['has_error'] = True
 
-def email_verification(request, uidb64, token):
-    try:
-        id = force_text(urlsafe_base64_decode(uidb64))
-        user = CustomUser.objects.get(pk=id)
+            return render(request, 'authentification/registration.html', context, status=409)
 
-        if not account_activation_token.check_token(user, token):
-            return redirect('login' + '?message=' + 'User already activated')
+        if context['has_error']:
+            return render(request, 'authentification/registration.html', context)
 
-        if user.is_active:
+        user = CustomUser.objects.create_user(username=username, email=email, password=password2)
+        user.set_password(password2)
+        user.is_active = False
+        user.save()
+
+        if not context['has_error']:
+            send_activation_email(user, request)
+
+            messages.add_message(request, messages.SUCCESS,
+                                 'We sent you an email to verify your account')
             return redirect('login')
+
+    return render(request, 'authentification/registration.html')
+
+
+def activate_user(request, uid64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uid64))
+
+        user = CustomUser.objects.get(pk=uid)
+
+    except Exception as e:
+        user = None
+
+    if user and token_generator.check_token(user, token):
+        user.is_email_verified = True
         user.is_active = True
         user.save()
 
-        messages.success(request, 'Account activated successfully')
-        return redirect('login')
+        messages.add_message(request, messages.SUCCESS,
+                             'Email verified, you can now login')
+        return redirect(reverse('login'))
 
-    except Exception as ex:
-        pass
+    return render(request, 'authentification/activate-failed.html', {"user": user})
 
-    return redirect('login')
+
+def sign_in(request):
+    if request.method == 'POST':
+        context = {'data': request.POST}
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username=cd['username'], password=cd['password'])
+            if user and not user.is_email_verified:
+                messages.add_message(request, messages.ERROR,
+                                     'Email is not verified, please check your email inbox')
+                return render(request, 'authentification/login.html', context, status=401)
+
+            if not user:
+                messages.add_message(request, messages.ERROR,
+                                     'Invalid credentials, try again')
+                return render(request, 'authentification/login.html', context, status=401)
+
+            login(request, user)
+
+            messages.add_message(request, messages.SUCCESS,
+                                 f'Welcome {user.username}')
+
+            return redirect(reverse('index'))
+    else:
+        form = LoginForm()
+
+    return render(request, 'authentification/login.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)
+
+    messages.add_message(request, messages.SUCCESS,
+                         'Successfully logged out')
+
+    return redirect(reverse('login'))

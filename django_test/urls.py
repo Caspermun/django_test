@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from blog.registration import registration, sign_in, email_verification
+from blog.registration import registration, activate_user, logout_user, sign_in
 from blog.views import index, category, author, user, card, create_ad, ad, ads
 
 urlpatterns = [
@@ -27,11 +27,12 @@ urlpatterns = [
     path('author/<int:pk>', author, name='author'),
     path('user/<int:pk>', user, name='user'),
     path('login/', sign_in, name='login'),
+    path('logout/', logout_user, name='logout_user'),
     path('registration/', registration, name='registration'),
     path('post/', card, name='post'),
     path('create-ad/', create_ad, name='create_ad'),
     path('ad/', ad, name='ad'),
     path('ads/<int:pk>', ads, name='ads'),
-    path('activate/<uid64>/<token>', email_verification, name='activate'),
+    path('activate/<uid64>/<token>', activate_user, name='activate'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
