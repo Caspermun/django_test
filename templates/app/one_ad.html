@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% load helper %}
+
+{% load ad_extensions %}
+
+{% block title %}{{ ad.title }}{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ ad.description }}">
+    <meta name="keywords" content="{{ meta_key_words }}">
+{% endblock %}
+
+{% block content %}
+    <div class="one-ad">
+        <div class="bread-crumbs">
+            <ul>
+                <li><a href="{% url 'index' %}">Главная</a><span>></span></li>
+                <li><a href="{% url 'ad:all_ads' %}">Объявления</a><span>></span></li>
+                <li class="active"><a href="{% url 'ad:one_ad' ad_id=ad.id %}">{{ ad.title }}</a></li>
+            </ul>
+        </div>
+        <section>
+            <div class="title"><h1>{{ ad.title }}</h1></div>
+            <div class="info">
+                <div class="views">Просмотры: {{ ad.views }}</div>
+                <div class="date">Дата публикации: {{ ad.created_at|date:"d.m.y" }}</div>
+                <div class="user">Пользователь: {% if ad.user %}<a href="{% url 'users:user_profile' user_id=ad.user.id %}">{{ ad.user }}</a>{% else %}<a href="#">Аноним</a>{% endif %}</div>
+                {% if ad.user == request.user %}<div class="is_active">Статус: {{ ad.is_active|render_boolean|safe }}</div>{% endif %}
+            </div>
+            <div class="ad-info">
+                <ul>
+                    <li>Город: <span>{{ ad.city }}</span></li>
+                    <li>Метро: <span>{{ ad.metro }}</span></li>
+                    <li>Телефоны: <span>{{ ad.phone }}</span></li>
+                </ul>
+            </div>
+            <div class="slider" id="slider">
+                {% for image in ad.media.all %}
+                    <div>
+                        <img src="{{ image.media_file.url }}" alt="{{ ad.title }}">
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="slider-pagination" id="slider-pagination">
+                {% if ad.media %}
+                    {% for image in ad.media.all %}
+                        <div>
+                            <img src="{{ image.media_file.url }}" alt="{{ ad.title }}">
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="ad-description">
+                {{ ad.description|clear_spaces|safe }}
+            </div>
+            <div class="ad-price">
+                <div class="pre">Цена:</div>
+                {{ ad.price }}
+            </div>
+
+            <div class="map" id="map_canvas">
+
+            </div>
+
+            <div class="navigations group">
+                {% if prev %}<span><a href="{% url 'ad:one_ad' ad_id=prev %}"><< Предыдущее объявление</a></span>{% endif %}
+                {% if next %}<span><a href="{% url 'ad:one_ad' ad_id=next %}">Следущее объявление >></a></span>{% endif %}
+            </div>
+
+            <div class="notification warning">
+                Избегайте мошенничества, проверяйте перед оплатой. Будьте внимательны.<br>
+                Этот сайт не несет ответственности за достоверность публикуемых объявлений.
+            </div>
+
+            {% if horizontal_banner %}
+                <div class="middle-banner">
+                    <a href="{{ horizontal_banner.link }}" target="_blank"><img src="{{ horizontal_banner.content.url }}"></a>
+                </div>
+            {% endif %}
+
+        </section>
+    </div>
+    <div class="last-posts">
+        <div class="side-banners">
+            {% if left_small_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_small_banner.link }}" target="_blank">
+                        <img src="{{ left_small_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+            {% if left_large_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_large_banner.link }}" target="_blank">
+                        <img src="{{ left_large_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript_parameters %}
+    <script>
+
+        var ad_location = {
+            {% if ad.location %}
+                lat: parseFloat('{{ ad.location.position.latitude }}'.replace(',', '.')),
+                lng: parseFloat('{{ ad.location.position.longitude }}'.replace(',', '.'))
+            {% else %}
+                lat: 55.752563,
+                lng: 37.618744
+            {% endif %}
+        };
+    </script>
+{% endblock %}

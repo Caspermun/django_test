@@ -1,0 +1,17 @@
+{% load staticfiles %}
+{% load ad_extensions %}
+<div class="one-item">
+    <div class="preview">
+        <a href="{% url 'ad:one_ad' ad_id=ad.id %}">{% if ad.media.all.first %}<img src="{{ ad.media.all.first.media_file.url }}">{% else %}<img src="{% static 'images/no-image.png' %}" height="100%">{% endif %}</a>
+    </div>
+    <div class="title"><a href="{% url 'ad:one_ad' ad_id=ad.id %}">{{ ad.title }}</a></div>
+    <div class="price">Цена: {% if ad.price != 'Договорная' %}{{ ad.price }} руб.{% else %}{{ ad.price }}{% endif %}</div>
+    <div class="description">
+        {{ ad.description|clear_spaces|safe|slice:"0:80" }}... <a href="{% url 'ad:one_ad' ad_id=ad.id %}" class="more">Читать дальше</a>
+    </div>
+    <div class="options">
+        <ul>
+            <li><img src="{% static  'images/icons/views-icon.png'  %}"><span>{{ ad.views }}</span></li>
+        </ul>
+    </div>
+</div>

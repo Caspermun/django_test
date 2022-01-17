@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Потверждение почты{% endblock %}
+{% block content %}
+    <div class="change-password">
+        <div class="bread-crumbs">
+            <ul>
+                <li><a href="{% url 'index' %}">Главная</a><span>></span></li>
+                <li class="active"><a href="#">Авторизация</a></li>
+            </ul>
+        </div>
+        <section>
+            {% if success %}
+                <div class="help-text">
+                    Ваш аккаунт успешно активирован! Добро пожаловать на наш сайт =)<br>
+                    Прежде чем вы приступите пользоваться нашим сайтом, пожалуйста скажите нам как вас называть?
+                </div>
+                <div class="form">
+                    {% if message %}
+                        <div class="thanks-text">{{ message }}</div>
+                    {% endif %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="input-row">
+                            {{ form.first_name }}
+                        </div>
+                        <div class="input-row">
+                            {{ form.last_name }}
+                        </div>
+                        <div class="input-row">
+                            <button type="submit">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            {% else %}
+                {% if reason == 'invalid' %}
+                    <div class="help-text">
+                        {{ message }}
+                    </div>
+                    <div class="form">
+                        <form action="{% url 'users:users_login' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="input-row">
+                                {{ form.email }}
+                            </div>
+                            <div class="input-row">
+                                {{ form.password }}
+                            </div>
+                            <div class="input-row">
+                                <button type="submit">Войти</button>
+                            </div>
+                        </form>
+                    </div>
+                {% elif reason == 'does_not_exists' %}
+                    <div class="help-text">
+                        {{ message }}
+                    </div>
+                    <div class="form">
+                        <form action="{% url 'users:users_register' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="input-row">
+                                {{ form.email }}
+                            </div>
+                            <div class="input-row">
+                                {{ form.password1 }}
+                            </div>
+                            <div class="input-row">
+                                {{ form.password2 }}
+                            </div>
+                            <div class="input-row">
+                                <button type="submit">Зарегистрироваться</button>
+                            </div>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="help-text">
+                        {{ message|safe }}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </section>
+    </div>
+    <div class="last-posts">
+        <div class="side-banners">
+            {% if left_small_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_small_banner.link }}" target="_blank">
+                        <img src="{{ left_small_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+            {% if left_large_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_large_banner.link }}" target="_blank">
+                        <img src="{{ left_large_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}{{ user.first_name }}{% endblock %}
+
+
+{% block content %}
+    <div class="change-password">
+        <div class="bread-crumbs">
+            <ul>
+                <li><a href="{% url 'index' %}">Главная</a><span>></span></li>
+                <li class="active"><a href="{% url 'users:user_profile' user_id=user.id %}">{{ user.email }}</a></li>
+            </ul>
+        </div>
+        <section>
+            <div class="help-text">
+                Имя: {{ user.first_name }}<br>
+                Фамилия: {{ user.last_name }}<br>
+                E-Mail: <a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a><br>
+                Дата регистрации: {{ user.date_joined|date:"d.m.Y" }}
+            </div>
+            {% if is_auth and user == request.user %}
+                <div class="help-text">
+                Обновить пароль
+                </div>
+                <div class="form">
+                    <div class="thanks-text" style="display: none;"></div>
+                    <form method="POST" action="{% url 'users:change_password' %}" id="change-password-form">
+                        <div class="input-row">
+                            {#<input type="password" placeholder="Новый пароль">#}
+                            {{ change_password_form.old_password }}
+                        </div>
+                        <div class="input-row">
+                            {#<input type="password" placeholder="Повторите пароль">#}
+                            {{ change_password_form.new_password }}
+                        </div>
+                        <div class="input-row">
+                            {#<input type="password" placeholder="Повторите пароль">#}
+                            {{ change_password_form.confirm_new_password }}
+                        </div>
+                        <div class="input-row">
+                            <button type="submit">Поставить</button>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+    <div class="last-posts">
+        <div class="side-banners">
+            {% if left_small_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_small_banner.link }}" target="_blank">
+                        <img src="{{ left_small_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+            {% if left_large_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_large_banner.link }}" target="_blank">
+                        <img src="{{ left_large_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_javascripts %}
+    <script>
+        $(document).ready(function () {
+            var form = $('#change-password-form');
+            $(form).on('submit', function (event) {
+                event.preventDefault();
+                var that = this;
+                var formData = {
+                    'old_password': $(that).find('#id_old_password').val(),
+                    'new_password': $(that).find('#id_new_password').val(),
+                    'confirm_new_password': $(that).find('#id_confirm_new_password').val(),
+                    'csrfmiddlewaretoken': getCookie('csrftoken')
+                };
+                var helpText = $(form).parent().find('.thanks-text');
+                $.ajax({
+                    method: 'POST',
+                    dataType: 'JSON',
+                    url: $(that).attr('action'),
+                    data: formData,
+                    success: function (response) {
+                        if(response.success) {
+                            helpText.html('Пароль изменён успешно').fadeIn('slow');
+                        } else {
+                            helpText.css('color', '#E11633').html(response.message).fadeIn('slow');
+                        }
+                    },
+                    error: function () {
+                        helpText.css('color', '#E11633').html('Произошла неизвестная ошибка попробуйте позже').fadeIn('slow');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

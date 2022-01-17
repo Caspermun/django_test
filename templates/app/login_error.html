@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Ошибка авторизации{% endblock %}
+
+{% block content %}
+    <div class="one-post">
+        <div class="main-text">
+            Ошибка
+        </div>
+        <div class="desc-text">
+            {% if reason %}
+                В данный момент сервис авторизации через ОК.ру не доступен. Попробуйте позже или попробуйте авторизоваться через другие соц. сети. Спасибо за понимание.
+                <ul>
+                    <li><a href="{% url 'users:vk_auth' %}" class="vk"><i class="fa fa-vk" aria-hidden="true"></i> Вконтакте</a></li>
+                    <li><a href="{% url 'users:fb_auth' %}" class="facebook"><i class="fa fa-facebook" aria-hidden="true"></i> Facebook</a></li>
+                </ul>
+            {% else %}
+                Авторизация прошла не успешно, попробуйте ещё раз или попытайтесь позже
+                {% if message %}
+                    <br>
+                    {{ message }}
+                {% endif %}
+            {% endif %}
+            <br>
+            Перейти на:
+            <ul>
+                <li><a href="{% url 'index' %}">Главную</a></li>
+                <li><a href="{% url 'ad:all_ads' %}">Все объявления</a></li>
+                <li><a href="{% url 'news:all_posts' %}">Новости</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="last-posts">
+        <div class="side-banners">
+            {% if left_small_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_small_banner.link }}" target="_blank">
+                        <img src="{{ left_small_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+            {% if left_large_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_large_banner.link }}" target="_blank">
+                        <img src="{{ left_large_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -22,6 +22,11 @@ class Post(models.Model):
         return self.title
 
 class Ad(models.Model):
+    class Meta:
+        verbose_name = 'Advertisement'
+        verbose_name_plural = 'Advertisements'
+        ordering = ['-created_at']
+
     title = models.CharField(max_length=255, verbose_name='Title')
     description = models.TextField()
     image = models.ImageField(upload_to='ads/', verbose_name='Main image')
@@ -45,6 +50,7 @@ class Author(models.Model):
 
 class CustomUser(AbstractUser):
     is_premium = models.BooleanField(default=False)
+    is_email_verified = models.BooleanField(default=True)
 
     def __str__(self):
         return self.username

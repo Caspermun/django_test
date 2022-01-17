@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% load ad_extensions %}
+
+{% block title %}Новости{% endblock %}
+
+{% block content %}
+    <div class="all-news">
+        <div class="bread-crumbs">
+            <ul>
+                <li><a href="{% url 'index' %}">Главная</a><span>></span></li>
+                <li class="active"><a href="{% url 'news:all_posts' %}">Новости</a></li>
+            </ul>
+        </div>
+        <section>
+            {% for post in posts %}
+                <div class="one-item">
+                    <div class="title"><a href="{% url 'news:one_post' post_id=post.id %}">{{ post.title }}</a></div>
+                    <div class="info group"><span>Опубликовано: {{ post.updated_at|date:"d.m.Y" }}</span><span>Просмотров: {{ post.views }}</span></div>
+                    <div class="description group">
+                        <div class="preview">
+                            <a href="{% url 'news:one_post' post_id=post.id %}"><img src="{{ post.preview.media_file.url }}"></a>
+                        </div>
+                        <div class="content">
+                            {{ post.short_description|slice:"0:300" }}...
+                        </div>
+                    </div>
+                    <div class="link group">
+                        <span><a href="{% url 'news:one_post' post_id=post.id %}">Подробнее</a></span>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+        <div class="view-more">
+            {% include 'app/partial/_pagination.html' %}
+        </div>
+        {% if horizontal_banner %}
+            <div class="middle-banner">
+                <a href="{{ horizontal_banner.link }}" target="_blank"><img src="{{ horizontal_banner.content.url }}"></a>
+            </div>
+        {% endif %}
+    </div>
+    <div class="last-posts">
+        <div class="side-banners">
+            {% if left_small_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_small_banner.link }}" target="_blank">
+                        <img src="{{ left_small_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+            {% if left_large_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_large_banner.link }}" target="_blank">
+                        <img src="{{ left_large_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

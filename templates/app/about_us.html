@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load ad_extensions %}
+{% load social_widgets %}
+{% block title %}О компании{% endblock %}
+
+{% block content %}
+    <div class="one-post">
+        <div class="bread-crumbs">
+            <ul>
+                <li><a href="{% url 'index' %}">Главная</a><span>></span></li>
+                <li class="active"><a href="{% url 'about' %}">О нас</a></li>
+            </ul>
+        </div>
+        <section>
+            <div class="title"><h1>О компании</h1></div>
+
+            <div class="post-body">
+                {{ content.text|clear_spaces|safe }}
+            </div>
+
+            {% if horizontal_banner %}
+                <div class="middle-banner">
+                    <a href="{{ horizontal_banner.link }}" target="_blank"><img src="{{ horizontal_banner.content.url }}"></a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+    <div class="last-posts">
+        <div class="side-banners">
+            {% if left_small_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_small_banner.link }}" target="_blank">
+                        <img src="{{ left_small_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+            {% if left_large_banner %}
+                <div class="one-banner">
+                    <a href="{{ left_large_banner.link }}" target="_blank">
+                        <img src="{{ left_large_banner.content.url }}">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

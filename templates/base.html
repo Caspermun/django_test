@@ -27,6 +27,13 @@
                         </li>
                     {% endfor %}
                 </ul>
+                <form class="uk-width-expand" action="{% url "ad" %}">
+                    <input class="uk-input uk-form-width-large" type="text" placeholder="Поиск товаров..."
+                           id="search-form-index" name="query">
+                    <button class="uk-button uk-button-default">
+                        Найти
+                    </button>
+                </form>
                 <div class="authorization">
                     <button type=button class="btn">
                         <a href="{% url 'login' %}" class="btns">
@@ -52,23 +59,23 @@
                     Ads
                 </a>
             </div>
-{#            <div class="cards">#}
-{#                <div class="first">#}
-{#                    <a href="{% url "post" %}" class="card">#}
-{#                        Apartments#}
-{#                    </a>#}
-{#                </div>#}
-{#                <div class="second">#}
-{#                    <a href="#" class="card">#}
-{#                        Cars#}
-{#                    </a>#}
-{#                </div>#}
-{#                <div class="third">#}
-{#                    <a href="#" class="card">#}
-{#                        Animals#}
-{#                    </a>#}
-{#                </div>#}
-{#            </div>#}
+            {#            <div class="cards">#}
+            {#                <div class="first">#}
+            {#                    <a href="{% url "post" %}" class="card">#}
+            {#                        Apartments#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#                <div class="second">#}
+            {#                    <a href="#" class="card">#}
+            {#                        Cars#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#                <div class="third">#}
+            {#                    <a href="#" class="card">#}
+            {#                        Animals#}
+            {#                    </a>#}
+            {#                </div>#}
+            {#            </div>#}
         </div>
     </section>
     <footer id="footer" class="footer">

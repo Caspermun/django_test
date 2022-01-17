@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="list-group">
-        {% for i in rev_ads %}
+        {% for i in ads %}
             <li class="list-group-item">
                 <a href="{% url 'ads' pk=i.id %}">
                     {{ i.title }}

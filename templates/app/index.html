@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% load ad_extensions %}
+
+{% block title %}Главная{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{% if base_text %}{{ base_text|clear_spaces|safe }}{% endif %}">
+    <meta name="keywords" content="">
+{% endblock %}
+
+{% block content %}
+    <div class="last-ads">
+        <div class="ads-header">
+            <h2>Последние объявления</h2>
+        </div>
+        <div class="ads-content">
+            <section>
+                {% for ad in ads|slice:"0:6" %}
+                    {% include 'app/partial/_ads_index.html' %}
+                {% endfor %}
+            </section>
+            {% if horizontal_banner %}
+                <div class="middle-banner">
+                    <a href="{{ horizontal_banner.link }}" target="_blank"><img src="{{ horizontal_banner.content.url }}"></a>
+                </div>
+            {% endif %}
+            <section>
+                {% for ad in ads|slice:"6:12" %}
+                    {% include 'app/partial/_ads_index.html' %}
+                {% endfor %}
+            </section>
+        </div>
+        <div class="view-more">
+            <a href="{% url 'ad:all_ads' %}">Смотреть все объявления >></a>
+        </div>
+    </div>
+    <div class="last-posts">
+        <div class="post-header"><h2>Последние новости</h2></div>
+        <div class="post-content">
+            {% include 'app/partial/_news_index.html' %}
+            <div class="side-banners">
+                {% if left_small_banner %}
+                    <div class="one-banner">
+                        <a href="{{ left_small_banner.link }}" target="_blank">
+                            <img src="{{ left_small_banner.content.url }}">
+                        </a>
+                    </div>
+                {% endif %}
+                {% if left_large_banner %}
+                    <div class="one-banner">
+                        <a href="{{ left_large_banner.link }}" target="_blank">
+                            <img src="{{ left_large_banner.content.url }}">
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
