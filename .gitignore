@@ -22,3 +22,4 @@ media
 .env
 Pipfile
 Pipfile.lock
+__pycache__
