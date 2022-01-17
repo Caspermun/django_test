@@ -20,3 +20,5 @@ dump.rdb
 media
 /__pycache__/
 .env
+Pipfile
+Pipfile.lock
