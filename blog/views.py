@@ -105,11 +105,7 @@ def create_ad(request):
 
 def ad(request):
     ads = Ad.objects.all()
-    # rev_ads = reversed(ads)
-    if ads:
-        adverts = Ad.objects.filter(title__contains=ads)
-    else:
-        adverts = Ad.objects.all()
+
     return render(request, 'ad_list.html', locals())
 
 
@@ -118,29 +114,11 @@ def ads(request, pk):
 
     return render(request, 'ad_detail.html', locals())
 
-# def generate_view_params(request):
-#     is_auth = False
-#     if request.user and not request.user.is_anonymous:
-#         is_auth = True
-#
-#     banner_manager = BannersPlaces.objects.all().first()
-#     top_banner = banner_manager.top_banner if banner_manager else None
-#     middle_banner = banner_manager.middle_banner if banner_manager else None
-#     left_small_banner = banner_manager.left_small_banner if banner_manager else None
-#     left_large_banner = banner_manager.left_large_banner if banner_manager else None
-#     advertisement = AboutUs.objects.first().advertisement if AboutUs.objects.first() else None
-#     params = {
-#         'categories': get_categories(),
-#         'is_auth': is_auth,
-#         'app_login_form': LoginForm,
-#         'app_register_form': RegisterForm,
-#         'search_form': SearchForm(request.GET),
-#         'ad_creation_form': AdCreationForm(request.POST),
-#         'horizontal_banner': middle_banner,
-#         'top_banner': top_banner,
-#         'base_text': AboutUs.objects.first().base_text,
-#         'left_small_banner': left_small_banner,
-#         'left_large_banner': left_large_banner,
-#         'advertisement': advertisement
-#     }
-#     return params
+
+def search_ads(request):
+    ads = request.GET.get()
+    if ads:
+        adverts = Ad.objects.filter(title__contains=ads)
+    else:
+        adverts = Ad.objects.all()
+    return render(request, 'ad_detail.html', locals())
