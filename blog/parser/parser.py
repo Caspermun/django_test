@@ -4,17 +4,17 @@ import requests
 from bs4 import BeautifulSoup as BS
 from fake_useragent import UserAgent
 
-from blog.models import Ad
+# from blog.models import Ad
 
 URL = 'https://www.house.kg'
 PAGE = '/kupit?page='
+USER_AGENT = UserAgent(verify_ssl=False)
 
 
 def get_html(url, page=None):
     page = PAGE + str(page)
     get_from_page = url + page
-    ua = UserAgent(verify_ssl=False)
-    r = requests.get(get_from_page, headers={'User-Agent': ua.random})
+    r = requests.get(get_from_page, headers={'User-Agent': USER_AGENT.random})
     return r.text
 
 
@@ -42,18 +42,27 @@ def get_data_from_html(html):
 
 
 def read_csv(file):
+    url_list = []
     with open(file, 'r', encoding='utf-8') as f:
         for i in csv.reader(f):
             if i:
-                title = i[1]
-                price = i[2]
-                desc = i[3]
-                image = i[4]
-                Ad.objects.create(title=title)
-                Ad.objects.create(price=price)
-                Ad.objects.create(description=desc)
-                Ad.objects.create(image=image)
+                url = i[0]
+                if not url in url_list:
+                    url_list.append(url)
+    return url_list
 
+
+def get_detail_html(urls):
+    for url in urls:
+        get_from_page = URL + url
+        html = requests.get(get_from_page, headers={'User-Agent': USER_AGENT.random}).text
+        soup = BS(html, 'html.parser')
+        try:
+            elements = soup.find('div', class_='details-stat-block').find('span', class_='dollars')
+            if elements and len(elements) > 0:
+                print(elements.text)
+        except:
+            continue
 
 
 if __name__ == '__main__':
@@ -61,4 +70,5 @@ if __name__ == '__main__':
     #     html = get_html(URL, page=i)
     #     get_data_from_html(html)
     #     print(f'Страница {i} успешно спарсена')
-    read_csv('10_pages.csv')
+    # read_csv('10_pages.csv')
+    get_detail_html(read_csv('10_pages.csv'))

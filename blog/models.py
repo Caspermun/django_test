@@ -1,5 +1,8 @@
+from tempfile import NamedTemporaryFile
+from urllib.request import urlopen
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.files import File
 
 # Create your models here.
 from django.utils import timezone
@@ -34,6 +37,14 @@ class Ad(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     moderated = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+
+    def get_remote_image(self, url):
+        if not self.image:
+            img_temp = NamedTemporaryFile(delete=True)
+            img_temp.write(urlopen(url).read())
+            img_temp.flush()
+            self.image.save(f"image_{self.pk}.jpeg", File(img_temp))
+        self.save()
 
     def __str__(self):
         return self.title

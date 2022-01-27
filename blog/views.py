@@ -1,3 +1,10 @@
+import csv
+from io import BytesIO
+
+import requests
+import tempfile
+from django.core import files
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -122,3 +129,21 @@ def search_ads(request):
     else:
         adverts = Ad.objects.all()
     return render(request, 'ad_detail.html', locals())
+
+
+def read_csv(request):
+    file = str(settings.BASE_DIR) + r'/blog/parser/10_pages.csv'
+    with open(file, 'r', encoding='utf-8') as f:
+        for i in csv.reader(f):
+            if i:
+                title = i[1]
+                desc = i[3]
+                user_id = 1
+                image = i[4]
+                ad = Ad.objects.filter(title=title).exists()
+                if not ad:
+                    ad = Ad.objects.create(title=title, description=desc, user_id=user_id)
+                    if image:
+                        ad.get_remote_image(image)
+
+    return HttpResponse('Done!')
