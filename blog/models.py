@@ -3,9 +3,10 @@ from urllib.request import urlopen
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.files import File
+from django.utils.html import escape
+
 
 # Create your models here.
-from django.utils import timezone
 
 
 class Category(models.Model):
@@ -13,6 +14,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Post(models.Model):
     title = models.CharField(max_length=255, verbose_name='Title')
@@ -23,6 +25,7 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Ad(models.Model):
     class Meta:
@@ -53,6 +56,7 @@ class Ad(models.Model):
 class Author(models.Model):
     name = models.CharField(max_length=255, verbose_name='Name')
     surname = models.CharField(max_length=255, verbose_name='Surname')
+
     # posts = models.ForeignKey(to='Post', on_delete=models.CASCADE, related_name='Posts')
 
     def __str__(self):
