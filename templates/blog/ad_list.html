@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="list-group">
+        {% for i in object_list %}
+            <li class="list-group-item">
+                <a href="{% url 'ads' pk=i.id %}">
+                    {{ i.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </div>
+{% endblock %}

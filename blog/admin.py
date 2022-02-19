@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from imagekit.admin import AdminThumbnail
+
 
 from blog.models import Post, Author, Category, Comment, CustomUser, Ad
 
@@ -36,10 +35,11 @@ class Ads(admin.ModelAdmin):
 
     image_tag.allow_tags = True
     image_tag.__name__ = 'Image'
-    fieldsets = ((None, {'fields': ('title', 'description', 'image_tag', 'image', 'user', 'moderated', 'is_active')}), )
+    fieldsets = ((None, {'fields': ('title', 'description', 'image_tag', 'image', 'price', 'discount', 'user', 'moderated', 'is_active')}),)
     list_display = ('image_tag', 'title', 'user', 'is_active', 'moderated')
-    list_display_links = ('title',)
-    search_fields = ('title__startswith',)
+    list_display_links = ('image_tag', 'title')
+    list_filter = ['user', 'created_at']
+    search_fields = ('title__startswith', 'description__startswith')
     readonly_fields = ('image_tag',)
     list_per_page = 10
 

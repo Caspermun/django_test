@@ -35,11 +35,24 @@ class Ad(models.Model):
 
     title = models.CharField(max_length=255, verbose_name='Title')
     description = models.TextField()
-    image = models.ImageField(upload_to='ads/', verbose_name='Main image')
+    image = models.ImageField(upload_to='ads/', verbose_name='Main image', null=True, blank=True)
     user = models.ForeignKey(to='CustomUser', on_delete=models.CASCADE, verbose_name='User')
     created_at = models.DateTimeField(auto_now_add=True)
     moderated = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    price = models.PositiveIntegerField(blank=True, null=True, verbose_name='Price')
+    discount = models.IntegerField(blank=True, null=True, verbose_name='Discount')
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def get_price(self):
+        if self.price and self.discount:
+            price = self.price - (self.price * self.discount / 100)
+        else:
+            price = 'Договорная'
+        return price
 
     def get_remote_image(self, url):
         if not self.image:
@@ -48,9 +61,6 @@ class Ad(models.Model):
             img_temp.flush()
             self.image.save(f"image_{self.pk}.jpeg", File(img_temp))
         self.save()
-
-    def __str__(self):
-        return self.title
 
 
 class Author(models.Model):

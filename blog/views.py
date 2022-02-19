@@ -7,11 +7,14 @@ from django.core import files
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
+from django.views.generic import ListView
+
 from blog.forms import AdForm
 from blog.models import Category, Post, Author, Comment, CustomUser, Ad
+
 
 
 def index(request):
@@ -147,3 +150,12 @@ def read_csv(request):
                         ad.get_remote_image(image)
 
     return HttpResponse('Done!')
+
+
+class UserAdListView(ListView):
+
+    template_name = 'blog/ad_list.html'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(CustomUser, id=self.kwargs['pk'])
+        return Ad.objects.filter(user_id=self.user)
