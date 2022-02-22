@@ -18,10 +18,16 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from drf_yasg import openapi
+from rest_framework import permissions
+from rest_framework.schemas import get_schema_view
+
+from blog.api.v1.authentication import RegisterView, LoginView, activation_user
 from blog.api.v1.views import ListCreateAdView, RetrieveUpdateDestroyAdView
 
 from blog.registration import registration, activate_user, logout_user, sign_in
 from blog.views import index, category, author, user, card, create_ad, ad, ads, read_csv, UserAdListView
+
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
@@ -29,9 +35,9 @@ urlpatterns = [
                   path('category/<int:pk>', category, name='category'),
                   path('author/<int:pk>', author, name='author'),
                   path('user/<int:pk>', user, name='user'),
-                  path('login/', sign_in, name='login'),
+                  # path('login/', sign_in, name='login'),
                   path('logout/', logout_user, name='logout_user'),
-                  path('registration/', registration, name='registration'),
+                  # path('registration/', registration, name='registration'),
                   path('post/', card, name='post'),
                   path('create-ad/', create_ad, name='create_ad'),
                   path('ad/', ad, name='ad'),
@@ -39,5 +45,8 @@ urlpatterns = [
                   path('ads/user/<int:pk>', UserAdListView.as_view(), name='user_ads'),
                   path('readcsv/', read_csv, name='parser'),
                   path('api/v1/get-ads/', ListCreateAdView.as_view(), name='get_list_ads'),
-                  path('api/v1/get-ad/<int:pk>/', RetrieveUpdateDestroyAdView.as_view(), name='get_rud')
+                  path('api/v1/get-ad/<int:pk>/', RetrieveUpdateDestroyAdView.as_view(), name='get_rud'),
+                  path('api/v1/register/', RegisterView.as_view(), name='register'),
+                  path('api/v1/login/', LoginView.as_view(), name='login'),
+                  path('api/v1/activate/<uid64>/<token>', activation_user, name='activate'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

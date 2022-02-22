@@ -1,4 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.utils.decorators import method_decorator
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
 from rest_framework.pagination import PageNumberPagination
@@ -11,12 +13,21 @@ from blog.models import Ad
 
 class ListCreateAdView(ListCreateAPIView):
     queryset = Ad.objects.filter(moderated=True)
+    # queryset = Ad.objects.all()
     serializer_class = AdSerializer
     pagination_class = PageNumberPagination
 
     def get(self, request, *args, **kwargs):
         ads = Ad.objects.filter(moderated=True).values('id', 'title')
         return Response(ads)
+
+    @method_decorator(login_required())
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = AdSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user_id=1)
+            return Response(serializer.data)
 
 
 class RetrieveUpdateDestroyAdView(RetrieveUpdateDestroyAPIView):
@@ -50,3 +61,4 @@ def get_list_ads(request, *args, **kwargs):
             serializer.save()
             return Response(serializer.data)
     return Response({'ads': serializer.data})
+

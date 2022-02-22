@@ -1,9 +1,14 @@
 from tempfile import NamedTemporaryFile
 from urllib.request import urlopen
-from django.contrib.auth.models import AbstractUser
+
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin, UserManager
 from django.db import models
 from django.core.files import File
+from django.utils import timezone
 from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 # Create your models here.
@@ -75,10 +80,18 @@ class Author(models.Model):
 
 class CustomUser(AbstractUser):
     is_premium = models.BooleanField(default=False)
-    is_email_verified = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
+
+
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
 
 
 class Comment(models.Model):
