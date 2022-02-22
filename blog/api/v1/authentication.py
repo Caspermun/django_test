@@ -2,17 +2,17 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.urls import reverse
+
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from rest_framework import generics, views, status
+from rest_framework import views
 from rest_framework.authentication import TokenAuthentication
+
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from blog.api.v1.serializers import RegisterSerializer, LoginSerializer
 from blog.api.v1.utils import generate_token
@@ -21,10 +21,11 @@ from django_test import settings
 
 
 class LoginView(ObtainAuthToken):
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
-        if not serializer.is_valid():
+        if not serializer.is_valid(raise_exception=True):
             return Response({'User': 'not found'})
         user = serializer.validated_data['user']
         token = Token.objects.get_or_create(user=user)
@@ -47,8 +48,10 @@ class RegisterView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
+        password2 =
         if serializer.is_valid():
             user = serializer.save()
+            user.set_password(password2)
             user.is_active = False
             user.save()
             current_site = get_current_site(request)

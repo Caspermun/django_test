@@ -1,14 +1,9 @@
-from django.contrib import auth
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth import authenticate
+
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from blog.models import Ad, CustomUser
 from rest_framework import serializers
-
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -29,7 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if password != password2:
             raise ValidationError('password didnt exists')
 
-        user.set_password(password)
+        user.set_password(password2)
         user.save()
         return user
 
@@ -57,7 +52,7 @@ class LoginSerializer(serializers.ModelSerializer):
         email = attrs.get('email', '')
         password = attrs.get('password', '')
         filtered_user_by_email = CustomUser.objects.filter(email=email)
-        user = auth.authenticate(email=email, password=password)
+        user = authenticate(email=email, password=password)
 
         if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
             raise AuthenticationFailed(
