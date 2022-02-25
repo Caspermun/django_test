@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 
 from blog.api.v1.serializers import RegisterSerializer, LoginSerializer
 from blog.api.v1.utils import generate_token
@@ -21,19 +21,36 @@ from django_test import settings
 
 
 class LoginView(ObtainAuthToken):
-    authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
-        serializer = LoginSerializer(data=request.data)
-        if not serializer.is_valid(raise_exception=True):
-            return Response({'User': 'not found'})
-        user = serializer.validated_data['user']
-        token = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        # serializer = LoginSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        data = request.data
+        try:
+            user = CustomUser.objects.get(email=data['email'])
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key if token else created.key})
+        except:
+            return Response({'error': 'no user'}, status=HTTP_404_NOT_FOUND)
 
     def get(self, token):
         return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
 
+class LoginTokenView(ObtainAuthToken):
+    serializer_class = LoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
 
 class RegisterView(views.APIView):
 
@@ -48,10 +65,8 @@ class RegisterView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data)
-        password2 =
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             user = serializer.save()
-            user.set_password(password2)
             user.is_active = False
             user.save()
             current_site = get_current_site(request)

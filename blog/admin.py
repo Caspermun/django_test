@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-
+from rest_framework.authtoken.admin import TokenAdmin
 
 from blog.models import Post, Author, Category, Comment, CustomUser, Ad
 
@@ -45,3 +45,5 @@ class Ads(admin.ModelAdmin):
 
 
 admin.site.register(Ad, Ads)
+
+TokenAdmin.raw_id_fields = ['user']

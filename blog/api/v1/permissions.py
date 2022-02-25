@@ -1,8 +1,7 @@
 from rest_framework import permissions
 
+class IsUserOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in ['PUT', 'PATCH', 'DELETE']:
+            return True if obj.user == request.user else False
 
-class IsUserIsAuthenticated(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method == 'GET':
-            return True
-        return request.user and request.user.is_authenticated

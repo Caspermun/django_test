@@ -22,7 +22,7 @@ from drf_yasg import openapi
 from rest_framework import permissions
 from rest_framework.schemas import get_schema_view
 
-from blog.api.v1.authentication import RegisterView, LoginView, activation_user
+from blog.api.v1.authentication import RegisterView, LoginView, activation_user, LoginTokenView
 from blog.api.v1.views import ListCreateAdView, RetrieveUpdateDestroyAdView
 
 from blog.registration import registration, activate_user, logout_user, sign_in
@@ -49,4 +49,5 @@ urlpatterns = [
                   path('api/v1/register/', RegisterView.as_view(), name='register'),
                   path('api/v1/login/', LoginView.as_view(), name='login'),
                   path('api/v1/activate/<uid64>/<token>', activation_user, name='activate'),
+                  path('api/v1/token-login/', LoginTokenView.as_view(), name='token_auth'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

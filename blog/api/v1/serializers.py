@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 
@@ -22,56 +24,38 @@ class RegisterSerializer(serializers.ModelSerializer):
         password2 = self.validated_data['password2']
 
         if password != password2:
-            raise ValidationError('password didnt exists')
+            raise ValidationError('passwords mismatch!')
 
         user.set_password(password2)
         user.save()
         return user
 
 
-class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=255, min_length=3)
-    password = serializers.CharField(write_only=True)
-    username = serializers.CharField(read_only=True)
-
-    tokens = serializers.SerializerMethodField()
-
-    def get_tokens(self, obj):
-        user = CustomUser.objects.get(email=obj['email'])
-
-        return {
-            'refresh': user.tokens()['refresh'],
-            'access': user.tokens()['access']
-        }
-
-    class Meta:
-        model = CustomUser
-        fields = ['email', 'password', 'username', 'tokens']
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(write_only=True)
+    password = serializers.CharField(max_length=128, write_only=True)
+    token = serializers.CharField(
+        label=_("Token"),
+        read_only=True
+    )
 
     def validate(self, attrs):
-        email = attrs.get('email', '')
-        password = attrs.get('password', '')
-        filtered_user_by_email = CustomUser.objects.filter(email=email)
-        user = authenticate(email=email, password=password)
+        email = attrs.get('email')
+        password = attrs.get('password')
 
-        if filtered_user_by_email.exists() and filtered_user_by_email[0].auth_provider != 'email':
-            raise AuthenticationFailed(
-                detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
+        if email and password:
+            user = authenticate(request=self.context.get('request'),
+                                email=email, password=password)
 
-        if not user:
-            raise AuthenticationFailed('Invalid credentials, try again')
-        if not user.is_active:
-            raise AuthenticationFailed('Account disabled, contact admin')
-        if not user.is_verified:
-            raise AuthenticationFailed('Email is not verified')
+            if not user:
+                msg = _('Unable to log in with provided credentials.')
+                raise serializers.ValidationError(msg, code='authorization')
+        else:
+            msg = _('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code='authorization')
 
-        return {
-            'email': user.email,
-            'username': user.username,
-            'tokens': user.tokens
-        }
-
-        # return super().validate(attrs)
+        attrs['user'] = user
+        return attrs
 
 
 class AdSerializer(serializers.ModelSerializer):
@@ -89,14 +73,14 @@ class AdSerializer(serializers.ModelSerializer):
         return obj.user.username
 
     def create(self, validated_data):
-        moderated = validated_data.pop('moderated')
         instance = Ad.objects.create(**validated_data)
         return instance
 
     def update(self, instance, validated_data):
         if validated_data.get('price') > 0:
             instance.price = validated_data.get('price')
-            instance.save()
+            instance.update(**validated_data)
+
             return instance
         else:
             raise serializers.ValidationError({"error": 'price is not valid'})
