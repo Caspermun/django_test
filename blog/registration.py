@@ -122,11 +122,11 @@ def activate_user(request, uid64, token):
 
         user = CustomUser.objects.get(pk=uid)
 
-    except Exception as e:
+    except Exception:
         user = None
 
     if user and token_generator.check_token(user, token):
-        user.is_email_verified = True
+        user.is_verified = True
         user.is_active = True
         user.save()
 

@@ -60,6 +60,7 @@ class LoginSerializer(serializers.Serializer):
 
 class AdSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField()
+    image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Ad
@@ -79,7 +80,15 @@ class AdSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         if validated_data.get('price') > 0:
             instance.price = validated_data.get('price')
-            instance.update(**validated_data)
+            instance.title = validated_data.get('title')
+            instance.description = validated_data.get('description')
+            instance.image = validated_data.get('image')
+            # instance.user = validated_data.get('user')
+            # instance.created_at = validated_data.get('created_at')
+            instance.moderated = validated_data.get('moderated')
+            instance.is_active = validated_data.get('is_active')
+            instance.discount = validated_data.get('discount')
+            instance.save()
 
             return instance
         else:
